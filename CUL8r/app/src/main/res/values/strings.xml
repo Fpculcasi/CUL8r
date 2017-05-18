@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CUL8r</string>
+    <string name="title_activity_main">CUL8r</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+</resources>
