@@ -1,99 +1,107 @@
 package com.example.francescop.cul8r;
 
 import android.app.Activity;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
-        private EditText editTextUserName;
-        private EditText editTextPassword;
-        private Button button;
-        Dialog loadingDialog;
-
-        public static final String USER_NAME = "USERNAME";
-
-        String username, password;
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-
-            editTextUserName = (EditText) findViewById(R.id.editTextUserName);
-            editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-            button = (Button) findViewById(R.id.button);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    username = editTextUserName.getText().toString();
-                    password = editTextPassword.getText().toString();
-                    if (username.equals(""))
-                        Toast.makeText(getApplicationContext(),
-                                "Insert an username!", Toast.LENGTH_LONG).show();
-                    else
-                        new Login().execute(username,password);
-                }
-            });
+    int userSelection = 1;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            userSelection = savedInstanceState.getInt("userSelection");
         }
+        setContentView(R.layout.activity_main);
+    }
 
-        class Login extends AsyncTask<String, Void, String>{
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loadingDialog = ProgressDialog.show(MainActivity.this,
-                        "Login", "Issuing the request...");
-            }
+    public void buttonClicked(View v) {
+        switch (v.getId()) {
+            case R.id.button1:
+                userSelection = 1;
+                break;
+            case R.id.button2:
+                userSelection = 2;
+                break;
+            case R.id.button3:
+                userSelection = 3;
+                break;
+        }
+        showDetails(userSelection);
+    }
 
-            @Override
-            protected String doInBackground(String... params) {
-                String uname = params[0];
-                String pass = params[1];
-
-                Map<String,String> nameValuePairs = new HashMap<>();
-                nameValuePairs.put("username", uname);
-                nameValuePairs.put("password", pass);
-
-                ServiceHandler jsonParser = new ServiceHandler();
-                String result = jsonParser.makeServiceCall("login.php", nameValuePairs);
-
-                Log.e("Response: ", "> " + result);
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(String result){
-                if (result == null){
-                    Log.e("Data", "Didn't receive any data from server!");
-                    Toast.makeText(getApplicationContext(),
-                            "Server unreachable!", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    String s = result.trim();
-                    if(s.equalsIgnoreCase("success")){
-                        /*Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                        intent.putExtra(USER_NAME, username);
-                        finish();
-                        startActivity(intent);*/
-                        finish();
-                    }else
-                        Toast.makeText(getApplicationContext(),
-                                "Username or Password not valid!", Toast.LENGTH_LONG).show();
-                }
-                if(loadingDialog.isShowing())
-                    loadingDialog.dismiss();
-            }
+    private void highlightButton() {
+        int hc = getResources().getColor(android.R.color.holo_orange_dark);
+        int nc = getResources().getColor(android.R.color.primary_text_light);
+        Button b1 = (Button) findViewById(R.id.button1);
+        Button b2 = (Button) findViewById(R.id.button2);
+        Button b3 = (Button) findViewById(R.id.button3);
+        b1.setTextColor(nc);
+        b2.setTextColor(nc);
+        b3.setTextColor(nc);
+        switch (userSelection) {
+            case 1:
+                b1.setTextColor(hc);
+                break;
+            case 2:
+                b2.setTextColor(hc);
+                break;
+            case 3:
+                b3.setTextColor(hc);
+                break;
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("userSelection", userSelection);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        userSelection = savedInstanceState.getInt("userSelection");
+    }
+
+    boolean twoPanes() {
+        boolean res;
+        View detailsFrame = findViewById(R.id.details);
+        res = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
+        return res;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (twoPanes()) {
+            displayDetailsFragment();
+        }
+    }
+
+    private void displayDetailsFragment() {
+        highlightButton();
+        DetailsFragment details =
+                (DetailsFragment)getFragmentManager().findFragmentById(R.id.details);
+        if (details == null || details.getIndexFromArguments() != userSelection) {
+            details = DetailsFragment.newInstance(userSelection);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.details, details);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.commit();
+        }
+    }
+
+    private void showDetails(int i) {
+        if (twoPanes()) {
+            displayDetailsFragment();
+        } else {
+            Intent intent = new Intent(this, DetailsActivity.class);
+            intent.putExtra("index", i);
+            startActivity(intent);
+        }
+    }
+}

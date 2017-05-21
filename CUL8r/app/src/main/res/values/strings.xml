@@ -1,7 +1,15 @@
 <resources>
     <string name="app_name">CUL8r</string>
-    <string name="title_activity_main">CUL8r</string>
+    <string name="title_activity_login">CUL8r Login</string>
+    <string name="login_header">Sign in to start</string>
+    <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="username">Username</string>
+
+    <string name="option_1">Option 1</string>
+    <string name="option_2">Option 2</string>
+    <string name="option_3">Option 3</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

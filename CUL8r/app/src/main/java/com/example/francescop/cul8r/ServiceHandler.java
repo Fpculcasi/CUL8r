@@ -1,11 +1,6 @@
 package com.example.francescop.cul8r;
 
-/**
- * Created by francescop on 18/05/2017.
- */
-
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -16,11 +11,10 @@ import java.util.Map;
 
 import android.util.Log;
 
-public class ServiceHandler {
-    static InputStream is = null;
-    static String response = null;
-    static String Server_url = "http://fpculcasi.altervista.org";
+class ServiceHandler {
+    //static InputStream is = null;
 
+    //return a JSON string from Map<String,String>
     private String getEncodedData(Map<String,String> data) {
         StringBuilder sb = new StringBuilder();
         for(String key : data.keySet()) {
@@ -33,22 +27,23 @@ public class ServiceHandler {
 
             if(sb.length()>0) sb.append("&");
 
-            sb.append(key + "=" + value);
+            sb.append(key).append("=").append(value);
         }
         return sb.toString();
     }
 
-    public String makeServiceCall(String my_url, Map<String,String> params) {
-        response=null;
-        //Encoded String - we will have to encode string by our custom method
+    String makeServiceCall(String my_url, Map<String, String> params) {
+        String response = null;
+        //Encoded String - to encode string by our custom method
         String encodedStr = getEncodedData(params);
 
-        BufferedReader reader = null;
-        HttpURLConnection con = null;
+        BufferedReader reader;
+        HttpURLConnection con;
 
         try {
             //Converting address String to URL
-            URL url = new URL(Server_url + "/" + my_url);
+            String server_url = "http://fpculcasi.altervista.org";
+            URL url = new URL(server_url + "/" + my_url);
             //Opening the connection (Not setting or using CONNECTION_TIMEOUT)
             con = (HttpURLConnection) url.openConnection();
 
@@ -69,13 +64,13 @@ public class ServiceHandler {
 
             String line;
             while((line = reader.readLine()) != null) { //Read until there is something available
-                sb.append(line + "\n"); //Reading and saving line by line - not all at once
+                sb.append(line).append("\n"); //Reading and saving line by line - not all at once
             }
             response = sb.toString(); //Saving complete data received in string, you can do it differently
 
             //Check to the values received in Logcat
             Log.i("custom_check","The values received in the store part are as follows:");
-            Log.i("custom_check",line);
+            Log.i("custom_check", response);
 
             reader.close();
 
