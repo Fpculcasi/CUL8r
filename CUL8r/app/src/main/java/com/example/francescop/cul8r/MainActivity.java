@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 
@@ -34,25 +35,18 @@ public class MainActivity extends Activity {
     }
 
     private void highlightButton() {
-        int hc = getResources().getColor(android.R.color.holo_orange_dark);
-        int nc = getResources().getColor(android.R.color.primary_text_light);
-        Button b1 = (Button) findViewById(R.id.button1);
-        Button b2 = (Button) findViewById(R.id.button2);
-        Button b3 = (Button) findViewById(R.id.button3);
-        b1.setTextColor(nc);
-        b2.setTextColor(nc);
-        b3.setTextColor(nc);
-        switch (userSelection) {
-            case 1:
-                b1.setTextColor(hc);
-                break;
-            case 2:
-                b2.setTextColor(hc);
-                break;
-            case 3:
-                b3.setTextColor(hc);
-                break;
+        int hc = ContextCompat.getColor(this, R.color.colorAccent);
+        int nc = ContextCompat.getColor(this, R.color.colorPrimary);
+        Button b[] = new Button[3];
+        b[0] = (Button) findViewById(R.id.button1);
+        b[1] = (Button) findViewById(R.id.button2);
+        b[2] = (Button) findViewById(R.id.button3);
+
+        for(Button i:b){//deactivate each button
+            i.setBackgroundColor(nc);
         }
+        //activate only the selected one
+        b[userSelection-1].setBackgroundColor(hc);
     }
 
     @Override

@@ -3,23 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/option_1"
-        android:onClick="buttonClicked"/>
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/option_2"
-        android:onClick="buttonClicked"/>
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="buttonClicked"
-        android:text="@string/option_3" />
+    <ScrollView android:id="@+id/ScrollViewID"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button1"
+                android:text="@string/option_1"
+                style="@style/AppTheme.Button"
+                android:onClick="buttonClicked"/>
+            <Button
+                android:id="@+id/button2"
+                style="@style/AppTheme.Button"
+                android:text="@string/option_2"
+                android:onClick="buttonClicked"/>
+
+            <Button
+                android:id="@+id/button3"
+                style="@style/AppTheme.Button"
+                android:onClick="buttonClicked"
+                android:text="@string/option_3" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
