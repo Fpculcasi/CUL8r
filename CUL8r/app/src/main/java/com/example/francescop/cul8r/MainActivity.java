@@ -7,16 +7,24 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
     int userSelection = 1;
+    String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState != null) {
             userSelection = savedInstanceState.getInt("userSelection");
         }
         setContentView(R.layout.activity_main);
+        username = getIntent().getStringExtra("username");
+        TextView tw = (TextView) findViewById(R.id.textViewUname);
+        String txt = tw.getText().toString() + " " + username;
+        ((TextView) findViewById(R.id.textViewUname)).setText(txt);
     }
 
     public void buttonClicked(View v) {
@@ -42,10 +50,10 @@ public class MainActivity extends Activity {
         b[1] = (Button) findViewById(R.id.button2);
         b[2] = (Button) findViewById(R.id.button3);
 
-        for(Button i:b){//deactivate each button
+        for(Button i:b){//normal color for each button
             i.setBackgroundColor(nc);
         }
-        //activate only the selected one
+        //highlight only the selected one
         b[userSelection-1].setBackgroundColor(hc);
     }
 

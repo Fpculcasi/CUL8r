@@ -10,7 +10,8 @@
         style="@style/AppTheme.Button"
         android:textSize="25sp"
         android:padding="@dimen/fab_margin"
-        android:text="@string/login_header" />
+        android:text="@string/login_header"
+        android:drawableStart="@mipmap/ic_launcher_round"/>
 
     <ScrollView android:id="@+id/ScrollViewID"
         android:layout_width="fill_parent"
@@ -26,25 +27,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
-                android:layout_marginLeft="@dimen/fab_margin"
-                android:text="@string/username"
-                tools:ignore="RtlHardcoded" />
+                android:layout_marginStart="@dimen/fab_margin"
+                android:text="@string/username"/>
 
             <EditText
                 android:id="@+id/editTextUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fab_margin"
-                android:inputType="text" />
+                android:inputType="text"
+                android:labelFor="@id/editTextUserName"/>
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
-                android:layout_marginLeft="@dimen/fab_margin"
-                android:text="@string/password"
-                tools:ignore="RtlHardcoded" />
+                android:layout_marginStart="@dimen/fab_margin"
+                android:text="@string/password"/>
 
             <EditText
                 android:layout_width="match_parent"
@@ -52,7 +52,8 @@
                 android:layout_margin="@dimen/fab_margin"
                 android:inputType="textPassword"
                 android:ems="10"
-                android:id="@+id/editTextPassword" />
+                android:id="@+id/editTextPassword"
+                android:labelFor="@id/editTextPassword"/>
 
             <Button
             android:id="@+id/button"
