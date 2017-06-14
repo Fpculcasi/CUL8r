@@ -82,7 +82,6 @@ public class LoginActivity extends Activity {
                 if(s.equalsIgnoreCase("success")){
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("username", username);
-                    finish();
                     startActivity(intent);
                     Toast.makeText(getApplicationContext(),
                             "Success!", Toast.LENGTH_LONG).show();

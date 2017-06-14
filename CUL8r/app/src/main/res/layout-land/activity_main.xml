@@ -11,6 +11,5 @@
     <FrameLayout android:id="@+id/details"
         android:layout_weight="2"
         android:layout_width="0px"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 </LinearLayout>

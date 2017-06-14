@@ -38,6 +38,9 @@ public class MainActivity extends Activity {
             case R.id.button3:
                 userSelection = 3;
                 break;
+            case R.id.button4:
+                finish();
+                return;
         }
         showDetails(userSelection);
     }

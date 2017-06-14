@@ -47,7 +47,7 @@
                 style="@style/AppTheme.Button"
                 android:layout_gravity="bottom"
                 android:drawableStart="@drawable/ic_exit_to_app_white"
-                android:onClick=""
+                android:onClick="buttonClicked"
                 android:text="@string/option_4" />
         </LinearLayout>
     </ScrollView>
