@@ -30,7 +30,7 @@ public class LoginActivity extends Activity {
 
         editTextUserName = (EditText) findViewById(R.id.editTextUserName);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        Button button = (Button) findViewById(R.id.button);
+        Button button = (Button) findViewById(R.id.buttonLogin);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,14 +66,14 @@ public class LoginActivity extends Activity {
             ServiceHandler jsonParser = new ServiceHandler();
             String result = jsonParser.makeServiceCall("login.php", nameValuePairs);
 
-            Log.e("Response: ", "> " + result);
+            Log.i("***Response: ", "> " + result);
             return result;
         }
 
         @Override
         protected void onPostExecute(String result){
             if (result == null){
-                Log.e("Data", "Didn't receive any data from server!");
+                Log.e("***Data", "Didn't receive any data from server!");
                 Toast.makeText(getApplicationContext(),
                         "Server unreachable!", Toast.LENGTH_LONG).show();
             }

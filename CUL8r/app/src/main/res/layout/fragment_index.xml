@@ -41,7 +41,6 @@
                 android:onClick="buttonClicked"
                 android:text="@string/option_3" />
 
-            <!--TODO: back to main activity-->
             <Button
                 android:id="@+id/button4"
                 style="@style/AppTheme.Button"

@@ -68,9 +68,10 @@ class ServiceHandler {
             }
             response = sb.toString(); //Saving complete data received in string, you can do it differently
 
+            Log.i("Login",encodedStr);
             //Check to the values received in Logcat
-            Log.i("custom_check","The values received in the store part are as follows:");
-            Log.i("custom_check", response);
+            Log.i("Login","The values received in the store part are as follows:");
+            Log.i("Login", response);
 
             reader.close();
 

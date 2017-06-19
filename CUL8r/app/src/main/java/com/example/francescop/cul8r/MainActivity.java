@@ -91,6 +91,8 @@ public class MainActivity extends Activity {
         highlightButton();
         DetailsFragment details =
                 (DetailsFragment)getFragmentManager().findFragmentById(R.id.details);
+
+        // if the details fragment was empty or different from the currently selected
         if (details == null || details.getIndexFromArguments() != userSelection) {
             details = DetailsFragment.newInstance(userSelection);
             FragmentTransaction ft = getFragmentManager().beginTransaction();

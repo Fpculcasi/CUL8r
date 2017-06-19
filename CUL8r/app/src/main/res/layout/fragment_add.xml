@@ -1,0 +1,126 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView3"
+        style="@style/AppTheme.Button"
+        android:textSize="25sp"
+        android:padding="@dimen/fab_margin"
+        android:text="@string/Add_header"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--Description-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textViewDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:text="@string/description"/>
+
+                <EditText
+                    android:id="@+id/editTextDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:inputType="text"
+                    android:hint="Partita di calcetto"
+                    android:labelFor="@id/editTextDescription"/>
+            </LinearLayout>
+
+            <!--Position-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textViewPosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:text="@string/position"/>
+
+                <Button
+                    android:layout_width="44dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:id="@+id/buttonPosition"
+                    android:drawableStart="@drawable/ic_search_white"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:inputType="text"
+                    android:id="@+id/editTextPosition"
+                    android:hint="(43.7, 10.3)"
+                    android:labelFor="@id/editTextPosition"/>
+
+            </LinearLayout>
+
+            <!--Date-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textViewDateStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:text="@string/dateStart"/>
+
+                <EditText
+                    android:id="@+id/editTextDateStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:inputType="datetime"
+                    android:hint="12/06/2017 14:30"
+                    android:labelFor="@id/editTextDateStart"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/textViewDateEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:text="@string/dateEnd"/>
+
+                <EditText
+                    android:id="@+id/editTextDateEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:inputType="datetime"
+                    android:hint="12/06/2017 15:30"
+                    android:labelFor="@id/editTextDateEnd"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/buttonAdd"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:text="@string/add" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

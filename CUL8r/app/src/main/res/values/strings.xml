@@ -6,10 +6,23 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
 
+    <!---->
     <string name="choice">Choice an action user</string>
+
     <string name="option_1">Find event</string>
+
     <string name="option_2">Add event</string>
+    <string name="Add_header">Create a new Event</string>
+    <string name="description">Description</string>
+    <string name="position">Position</string>
+    <string name="dateStart">Start date</string>
+    <string name="dateEnd">End Date</string>
+    <string name="add">Add</string>
+
     <string name="option_3">My Events</string>
+
     <string name="option_4">Log out</string>
+
+    <!---->
 
 </resources>
