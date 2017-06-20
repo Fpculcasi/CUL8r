@@ -42,7 +42,10 @@ class ServiceHandler {
 
         try {
             //Converting address String to URL
-            String server_url = "http://fpculcasi.altervista.org";
+            String server_url =
+                    ///*
+                    "http://fpculcasi.altervista.org";
+                    //*/"http://10.0.2.2";
             URL url = new URL(server_url + "/" + my_url);
             //Opening the connection (Not setting or using CONNECTION_TIMEOUT)
             con = (HttpURLConnection) url.openConnection();

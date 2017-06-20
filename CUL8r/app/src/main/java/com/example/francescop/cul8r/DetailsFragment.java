@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -53,14 +53,13 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                 l = R.layout.details_fragment3; break;
         }
         mView = inflater.inflate(l, container, false);
-        Log.i("***onCrateView>",""+mView);
 
         //programmatically set button onClick listener
         switch(shownIndex){
             case 1:
-                MapFragment m =(MapFragment) getFragmentManager().findFragmentById(R.id.map);
-                //if getFragmentManager is for DetailsActivity, give a look for DetailsFragment
-                if(m==null) m=(MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+                MapView m =(MapView) mView.findViewById(R.id.map);
+                m.onCreate(savedInstanceState);
+                m.onResume(); //without this, map showed but was empty
                 m.getMapAsync(this);
                 break;
             case 2:
@@ -68,6 +67,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                 @Override
                 public void onClick(View view) {
                         /*TODO: code to add an event on the server*/
+                        //new Add().execute(username, );
                         Toast.makeText(getActivity(), "Added!", Toast.LENGTH_LONG).show();
                     }
                 });

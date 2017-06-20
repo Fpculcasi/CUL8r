@@ -41,6 +41,7 @@ public class LoginActivity extends Activity {
                     Toast.makeText(getApplicationContext(),
                             "Insert an username!", Toast.LENGTH_LONG).show();
                 else
+                    editTextPassword.setText("");//cleanup for security reasons
                     new Login().execute(username,password);
             }
         });
