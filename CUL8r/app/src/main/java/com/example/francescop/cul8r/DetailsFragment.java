@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,6 +21,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class DetailsFragment extends Fragment implements OnMapReadyCallback{
     GoogleMap mGoogleMap;
     View mView;
+    // GPSTracker class
+    GPSTracker gps;
 
     private static final LatLng PISA_ING = new LatLng(43.721361, 10.389927);
 
@@ -43,6 +46,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
         Log.i("***onCrateView>","");
         int l = 0;
+        gps = new GPSTracker(getActivity());
         int shownIndex = getIndexFromArguments();
         switch (shownIndex) {
             case 1:
@@ -54,7 +58,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         }
         mView = inflater.inflate(l, container, false);
 
-        //programmatically set button onClick listener
+        //programmatically set buttons' onClick listener
         switch(shownIndex){
             case 1:
                 MapView m =(MapView) mView.findViewById(R.id.map);
@@ -64,11 +68,30 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                 break;
             case 2:
                 mView.findViewById(R.id.buttonAdd).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                    @Override
+                    public void onClick(View view) {
                         /*TODO: code to add an event on the server*/
                         //new Add().execute(username, );
                         Toast.makeText(getActivity(), "Added!", Toast.LENGTH_LONG).show();
+                    }
+                });
+                mView.findViewById(R.id.buttonPosition).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("***","activity" + getActivity());
+                        // check if GPS enabled
+                        if(gps.canGetLocation()){
+
+                            double latitude = gps.getLatitude();
+                            double longitude = gps.getLongitude();
+                            gps.stopUsingGPS();
+
+                            ((EditText)mView.findViewById(R.id.editTextPosition)).
+                                    setText("("+latitude+";"+longitude+")");
+                        }else { // can't get location (GPS or Network is not enabled)
+                            gps.showSettingsAlert();
+                            // Ask user to enable GPS/network in settings
+                        }
                     }
                 });
                 break;
@@ -87,11 +110,27 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
 
         mGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        // GPSTracker class
+        gps = new GPSTracker(getActivity());
+        // check if GPS enabled
+        if(gps.canGetLocation()){
+            gps.stopUsingGPS();
+            LatLng l = new LatLng(gps.getLatitude(), gps.getLongitude());
+            googleMap.addMarker(new MarkerOptions().position(l).title("here you are").snippet("move"));
 
-        googleMap.addMarker(new MarkerOptions().position(PISA_ING).title("Scuola di Ingegneria a Pisa").snippet("Dio ti salvi"));
+            CameraPosition IngUnipi = CameraPosition.builder().target(l).zoom(16).bearing(0).tilt(45).build();
 
-        CameraPosition IngUnipi = CameraPosition.builder().target(PISA_ING).zoom(16).bearing(0).tilt(45).build();
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(IngUnipi));
 
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(IngUnipi));
+        }else { // can't get location (GPS or Network is not enabled)
+            gps.showSettingsAlert();
+            // Ask user to enable GPS/network in settings
+
+            googleMap.addMarker(new MarkerOptions().position(PISA_ING).title("Scuola di Ingegneria a Pisa").snippet("Dio ti salvi"));
+
+            CameraPosition IngUnipi = CameraPosition.builder().target(PISA_ING).zoom(16).bearing(0).tilt(45).build();
+
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(IngUnipi));
+        }
     }
 }
