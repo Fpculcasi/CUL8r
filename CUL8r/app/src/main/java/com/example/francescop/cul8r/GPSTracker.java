@@ -16,6 +16,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.MapView;
+
 public class GPSTracker extends Service implements LocationListener {
 
     private final Context mContext;
@@ -183,8 +185,7 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-    }
+    public void onLocationChanged(Location location) {}
 
     @Override
     public void onProviderDisabled(String provider) {

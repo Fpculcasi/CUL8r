@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
 
         // if the details fragment was empty or different from the currently selected
         if (details == null || details.getIndexFromArguments() != userSelection) {
-            details = DetailsFragment.newInstance(userSelection);
+            details = DetailsFragment.newInstance(userSelection, username);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.details, details);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -108,6 +108,7 @@ public class MainActivity extends Activity {
         } else {
             Intent intent = new Intent(this, DetailsActivity.class);
             intent.putExtra("index", i);
+            intent.putExtra("username",username);
             startActivity(intent);
         }
     }

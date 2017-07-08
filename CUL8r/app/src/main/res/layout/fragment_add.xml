@@ -12,7 +12,7 @@
         android:text="@string/Add_header"/>
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -25,12 +25,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/textViewDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
-                    android:text="@string/description"/>
+                    android:text="@string/description" />
 
                 <EditText
                     android:id="@+id/editTextDescription"
@@ -38,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
                     android:inputType="text"
-                    android:labelFor="@id/editTextDescription"/>
+                    android:labelFor="@id/editTextDescription" />
             </LinearLayout>
 
             <!--Position-->
@@ -46,27 +47,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/textViewPosition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
-                    android:text="@string/position"/>
+                    android:text="@string/position" />
 
                 <Button
+                    android:id="@+id/buttonPosition"
                     android:layout_width="44dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
-                    android:id="@+id/buttonPosition"
-                    android:drawableStart="@drawable/ic_gps_fixed_black"/>
+                    android:drawableStart="@drawable/ic_gps_fixed_black" />
 
                 <EditText
+                    android:id="@+id/editTextPosition"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
                     android:inputType="text"
-                    android:id="@+id/editTextPosition"
-                    android:labelFor="@id/editTextPosition"/>
+                    android:labelFor="@id/editTextPosition" />
 
             </LinearLayout>
 
@@ -75,12 +77,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/textViewDateStart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
-                    android:text="@string/dateStart"/>
+                    android:text="@string/dateStart" />
 
                 <EditText
                     android:id="@+id/editTextDateStart"
@@ -88,19 +91,22 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
                     android:inputType="datetime"
-                    android:labelFor="@id/editTextDateStart"/>
+                    android:labelFor="@id/editTextDateStart"
+                    android:hint="@string/date"
+                    android:textColorHint="@color/gray" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/textViewDateEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
-                    android:text="@string/dateEnd"/>
+                    android:text="@string/dateEnd" />
 
                 <EditText
                     android:id="@+id/editTextDateEnd"
@@ -108,12 +114,14 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/fab_margin"
                     android:inputType="datetime"
-                    android:labelFor="@id/editTextDateEnd"/>
+                    android:labelFor="@id/editTextDateEnd"
+                    android:hint="@string/date"
+                    android:textColorHint="@color/gray" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/buttonAdd"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fab_margin"
                 android:text="@string/add" />
