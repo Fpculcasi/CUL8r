@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -178,11 +179,11 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         });
 
         // GPSTracker class
-        gps = new GPSTracker(getActivity());
+        //gps = new GPSTracker(getActivity());
         // check if GPS enabled
         if(gps.canGetLocation()){
-            gps.stopUsingGPS();
             LatLng l = new LatLng(gps.getLatitude(), gps.getLongitude());
+            gps.stopUsingGPS();
             /*googleMap.addMarker(new MarkerOptions()
                     .position(l)
                     .title("here you are")
@@ -213,12 +214,12 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
             //--)*/
 
             CameraPosition first = CameraPosition.builder()
-                    .target(l).zoom(16).bearing(0).tilt(45).build();
+                    .target(l).zoom(14).bearing(0).tilt(30).build();
 
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(first));
             new Search().execute(l);
 
-        }else { // can't get location (GPS or Network is not enabled)
+        } else { // can't get location (GPS or Network is not enabled)
             gps.showSettingsAlert();
             // Ask user to enable GPS/network in settings
 
@@ -319,6 +320,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
 
     private class Search extends AsyncTask<Object, Void, String>{
         double dLat, dLon;
+        PolylineOptions rectOptions;
 
         @Override
         protected void onPreExecute() {
@@ -346,11 +348,15 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
             dLat = dn/R;
             dLon = de/(R*Math.cos(Math.PI*lat/180));
             //these values are in radiants, needs to be converted in decimal degrees
+            double maxLat = lat+dLat*180/Math.PI;
+            double minLat = lat-dLat*180/Math.PI;
+            double maxLng = lng+dLon*180/Math.PI;
+            double minLng = lng-dLon*180/Math.PI;
 
-            nameValuePairs.put("maxLat", ""+(lat+dLat*180/Math.PI));
-            nameValuePairs.put("maxLng", ""+(lng+dLon*180/Math.PI));
-            nameValuePairs.put("minLat", ""+(lat-dLat*180/Math.PI));
-            nameValuePairs.put("minLng", ""+(lng-dLon*180/Math.PI));
+            nameValuePairs.put("maxLat", ""+maxLat);
+            nameValuePairs.put("maxLng", ""+maxLng);
+            nameValuePairs.put("minLat", ""+minLat);
+            nameValuePairs.put("minLng", ""+minLng);
 
             Log.d("***lat",""+lat);
             Log.d("***lng",""+lng);
@@ -358,10 +364,18 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
             Log.d("***dLat", ""+dLat);
             Log.d("***dLon", ""+dLon);
 
-            Log.d("***maxLat", ""+nameValuePairs.get("maxLat"));
-            Log.d("***maxLng", ""+nameValuePairs.get("minLat"));
-            Log.d("***minLat", ""+nameValuePairs.get("maxLon"));
-            Log.d("***minLng", ""+nameValuePairs.get("minLon"));
+            Log.d("***maxLat", nameValuePairs.get("maxLat"));
+            Log.d("***maxLng", nameValuePairs.get("maxLng"));
+            Log.d("***minLat", nameValuePairs.get("minLat"));
+            Log.d("***minLng", nameValuePairs.get("minLng"));
+
+            // Instantiates a new Polyline object and adds points to define a rectangle
+            rectOptions = new PolylineOptions()
+                    .add(new LatLng(minLat, maxLng))
+                    .add(new LatLng(maxLat, maxLng))  // North of the previous point, but at the same longitude
+                    .add(new LatLng(maxLat, minLng))  // Same latitude, to the west
+                    .add(new LatLng(minLat, minLng))  // Same longitude, to the south
+                    .add(new LatLng(minLat, maxLng));  // Closes the polyline.
 
             ServiceHandler jsonParser = new ServiceHandler();
             String result = jsonParser.makeServiceCall("search.php", nameValuePairs);
@@ -378,6 +392,8 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                         "Server unreachable!", Toast.LENGTH_LONG).show();
             }
             else{
+                mGoogleMap.addPolyline(rectOptions).setColor(0x7FFF0000); //colored red, half transparent
+
                 // Parse the JSON input
                 try {
                     JSONObject jsonObj = new JSONObject(result);
@@ -396,7 +412,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                         mMarkers.put(mkr.getId(), eventObj.getString("id"));
                     }
 
-                } catch (JSONException e) { e.printStackTrace();}
+                } catch (JSONException e) { e.printStackTrace(); }
             }
             if(loadingDialog.isShowing()) loadingDialog.dismiss();
         }
