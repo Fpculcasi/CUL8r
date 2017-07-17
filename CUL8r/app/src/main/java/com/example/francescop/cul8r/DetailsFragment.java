@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,6 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +44,11 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
     // GPSTracker class
     GPSTracker gps;
 
+    ListView lv;
+
     // Stores the markers' id
     Map <String, String> mMarkers = new HashMap<>();
-    String markerChoosenId;
+    String markerChosenId;
 
     private static final LatLng PISA_ING = new LatLng(43.721361, 10.389927);
 
@@ -62,10 +68,47 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         return getArguments().getInt("index", 0);
     }
 
+    /*TODO save fragment instance******************************************************************
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            //Restore the fragment's state here
+            switch (getIndexFromArguments()) {
+                case 2:
+                    ((EditText) mView.findViewById(R.id.editTextDescription)).setText(savedInstanceState.getString("descr"));
+                    ((EditText) mView.findViewById(R.id.editTextPosition)).setText(savedInstanceState.getString("pos"));
+                    ((EditText) mView.findViewById(R.id.editTextDateStart)).setText(savedInstanceState.getString("start"));
+                    ((EditText) mView.findViewById(R.id.editTextDateEnd)).setText(savedInstanceState.getString("end"));
+                    break;
+                case 3:
+                    //l = R.layout.details_fragment3; break;
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        switch (getIndexFromArguments()) {
+            case 2:
+                outState.putString("descr",((EditText) mView.findViewById(R.id.editTextDescription)).getText().toString());
+                EditText posET = (EditText) mView.findViewById(R.id.editTextPosition);
+                outState.putString("pos", posET.getText().toString());
+                EditText startET = (EditText) mView.findViewById(R.id.editTextDateStart);
+                outState.putString("start",startET.getText().toString());
+                EditText endET = (EditText) mView.findViewById(R.id.editTextDateEnd);
+                outState.putString("end",endET.getText().toString());
+                break;
+            case 3:
+                //l = R.layout.details_fragment3; break;
+        }
+    }
+    /**********************************************************************************************/
+
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i("***onCrateView>","");
         int l = 0;
         gps = new GPSTracker(getActivity());
         int shownIndex = getIndexFromArguments();
@@ -143,8 +186,19 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                 });
                 break;
             case 3:
-                /*TODO: fill the fragment with the list of pending events by using an AsynchTask*/
-
+                lv = (ListView) mView.findViewById(R.id.listview);
+                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position,
+                                            long id) {
+                        Event entry = (Event) parent.getItemAtPosition(position);
+                        Log.d("***event "+entry.getDescription(),"verified "+entry.isVerified());
+                        if (entry.isVerified()) return;
+                        LatLng l = new LatLng(gps.getLatitude(), gps.getLongitude());
+                        new UpdateEvent(entry).execute(l);
+                    }
+                });
+                new GetEvents().execute();
                 break;
         }
 
@@ -165,14 +219,15 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         // Handle marker selection
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             public void onInfoWindowClick(Marker marker) {
-                markerChoosenId = mMarkers.get(marker.getId());
+                markerChosenId = mMarkers.get(marker.getId());
                 Button b = (Button) mView.findViewById(R.id.partecipate);
                 b.setVisibility(View.VISIBLE);
-                b.setText("Participate: " + markerChoosenId);
+                String buttonTxt = "Participate: " + markerChosenId;
+                b.setText(buttonTxt);
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        new Participate().execute(markerChoosenId);
+                        new Participate().execute(markerChosenId);
                     }
                 });
             }
@@ -238,7 +293,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingDialog = ProgressDialog.show(getActivity(), "Add a new event", "Issuing the request...");
+            if(isAdded()) loadingDialog = ProgressDialog.show(getActivity(), "Add a new event", "Issuing the request...");
         }
 
         @Override
@@ -270,11 +325,11 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         protected void onPostExecute(String result){
             if (result == null){
                 Log.e("***Data", "Didn't receive any data from server!");
-                Toast.makeText(getActivity(),
+                if(isAdded()) Toast.makeText(getActivity(),
                         "Server unreachable!", Toast.LENGTH_LONG).show();
             }
             else{
-                Toast.makeText(getActivity(),
+                if(isAdded()) Toast.makeText(getActivity(),
                         "Added!", Toast.LENGTH_SHORT).show();
             }
             if(loadingDialog.isShowing()) loadingDialog.dismiss();
@@ -307,13 +362,13 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         protected void onPostExecute(String result){
             if (result == null){
                 Log.e("***Data", "Didn't receive any data from server!");
-                Toast.makeText(getActivity(),
+                if(isAdded()) Toast.makeText(getActivity(),
                         "Server unreachable!", Toast.LENGTH_LONG).show();
             }else{
                 if(result.trim().equalsIgnoreCase("exists")){
-                    Toast.makeText(getActivity(), "Already DONE!", Toast.LENGTH_SHORT).show();
+                    if(isAdded()) Toast.makeText(getActivity(), "Already DONE!", Toast.LENGTH_SHORT).show();
                 }else
-                    Toast.makeText(getActivity(), "Added!", Toast.LENGTH_SHORT).show();
+                if(isAdded()) Toast.makeText(getActivity(), "Added!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -325,7 +380,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loadingDialog = ProgressDialog.show(getActivity(), "Search", "Looking for nearest events");
+            if(isAdded()) loadingDialog = ProgressDialog.show(getActivity(), "Search", "Looking for nearest events");
         }
 
         @Override
@@ -388,7 +443,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
         protected void onPostExecute(String result){
             if (result == null){
                 Log.e("***JSON Data","Didn't receive any data from server!");
-                Toast.makeText(getActivity(),
+                if(isAdded()) Toast.makeText(getActivity(),
                         "Server unreachable!", Toast.LENGTH_LONG).show();
             }
             else{
@@ -398,6 +453,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                 try {
                     JSONObject jsonObj = new JSONObject(result);
                     JSONArray events = jsonObj.getJSONArray("events");
+                    mMarkers.clear();
 
                     for (int i = 0; i < events.length();i++) {
                         JSONObject eventObj = (JSONObject) events.get(i);
@@ -415,6 +471,163 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback{
                 } catch (JSONException e) { e.printStackTrace(); }
             }
             if(loadingDialog.isShowing()) loadingDialog.dismiss();
+        }
+    }
+
+    private class GetEvents extends AsyncTask<Void, Void, MyArrayAdapter> {
+        MyArrayAdapter maa;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if(isAdded()) loadingDialog = ProgressDialog.show(getActivity(), "Retrieve the event list", "Issuing the request...");
+        }
+
+        @Override
+        protected MyArrayAdapter doInBackground(Void... args) {
+            String uname = getArguments().getString("username");
+            Map<String,String> nameValuePairs = new HashMap<>();
+            nameValuePairs.put("uname", uname);
+
+            ServiceHandler jsonParser = new ServiceHandler();
+            String result = jsonParser.makeServiceCall("getEvents.php", nameValuePairs);
+            Log.d("***GetEvents","result: "+result);
+
+            if (result != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    JSONArray jsonEvents = jsonObj.getJSONArray("events");
+                    ArrayList<Event> events = new ArrayList<>();
+
+                    for (int i = 0; i < jsonEvents.length();i++) {
+                        JSONObject eventsObj = (JSONObject) jsonEvents.get(i);
+
+                        Log.d("***Event","i: "+i);
+
+                        Event e = new Event(
+                                Integer.parseInt(eventsObj.getString("id")),
+                                eventsObj.getString("descr"),
+                                eventsObj.getString("start"),
+                                eventsObj.getString("end"),
+                                Double.parseDouble(eventsObj.getString("lat")),
+                                Double.parseDouble(eventsObj.getString("lng")),
+                                (eventsObj.getString("verified").equals("1")));
+                        Log.d("***Event","id: "+e.getId());
+                        Log.d("***Event","descr: "+e.getDescription());
+                        Log.d("***Event","start: "+e.getStart());
+                        Log.d("***Event","end: "+e.getEnd());
+                        Log.d("***Event","lat: "+e.getLat());
+                        Log.d("***Event","lng: "+e.getLng());
+                        Log.d("***Event","ver: "+e.isVerified() + " (" + eventsObj.getString("verified") + ")");
+
+                        events.add(e);
+                    }
+                    Log.d("***events",""+events);
+                    Log.d("***events",""+getActivity());
+                    if(isAdded()) maa = new MyArrayAdapter(getActivity(), events);
+
+                } catch (JSONException e) { e.printStackTrace(); }
+            } else Log.e("***JSON Data","Didn't receive any data from server!");
+
+            return maa;
+        }
+
+        @Override
+        protected void onPostExecute(MyArrayAdapter result){
+            if(isAdded()) if(loadingDialog.isShowing()) loadingDialog.dismiss();
+            Log.d("***Event","setAdapter: "+result);
+            if(result!=null){
+                result.sort(new Comparator<Event>() {
+                    @Override
+                    public int compare(Event e1, Event e2) {
+                        return e1.getStart().compareTo(e2.getStart());
+                    }
+                });
+                lv.setAdapter(result);
+            }
+        }
+    }
+
+    private class UpdateEvent extends AsyncTask<Object, Void, String> {
+        final Event event;
+        double dLat, dLon;
+
+        UpdateEvent(Event e){
+            this.event = e;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Object... params) {
+            LatLng position = (LatLng) params[0];
+
+            Map<String,String> nameValuePairs = new HashMap<>();
+            //Position, decimal degrees
+            double lat = position.latitude;
+            double lng = position.longitude;
+
+            //Earth’s radius, sphere
+            long R=6378137;
+
+            //offsets in meters
+            double dn = 1000;
+            double de = 1000;
+
+            //Coordinate offsets in radians
+            dLat = dn/R;
+            dLon = de/(R*Math.cos(Math.PI*lat/180));
+            //these values are in radiants, needs to be converted in decimal degrees
+            double maxLat = lat+dLat*180/Math.PI;
+            double minLat = lat-dLat*180/Math.PI;
+            double maxLng = lng+dLon*180/Math.PI;
+            double minLng = lng-dLon*180/Math.PI;
+
+            nameValuePairs.put("uname", getArguments().getString("username"));
+            nameValuePairs.put("event", ""+event.getId());
+            nameValuePairs.put("maxLat", ""+maxLat);
+            nameValuePairs.put("maxLng", ""+maxLng);
+            nameValuePairs.put("minLat", ""+minLat);
+            nameValuePairs.put("minLng", ""+minLng);
+
+            Log.d("***lat",""+lat);
+            Log.d("***lng",""+lng);
+
+            Log.d("***dLat", ""+dLat);
+            Log.d("***dLon", ""+dLon);
+
+            Log.d("***maxLat", nameValuePairs.get("maxLat"));
+            Log.d("***maxLng", nameValuePairs.get("maxLng"));
+            Log.d("***minLat", nameValuePairs.get("minLat"));
+            Log.d("***minLng", nameValuePairs.get("minLng"));
+
+            ServiceHandler jsonParser = new ServiceHandler();
+            String result = jsonParser.makeServiceCall("updateEvent.php", nameValuePairs);
+
+            Log.d("***Response", "" + result);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            if (result == null){
+                Log.e("***Data", "Didn't receive any data from server!");
+                if(isAdded()) Toast.makeText(getActivity(),
+                        "Server unreachable!", Toast.LENGTH_LONG).show();
+            }else{
+                if(result.trim().equalsIgnoreCase("exit"))
+                    if(isAdded()) Toast.makeText(getActivity(),
+                            "Too far from the event \""+event.getDescription()+"\"",
+                            Toast.LENGTH_SHORT).show();
+                else {
+                    if (isAdded()) Toast.makeText(getActivity(),
+                            "Updated!", Toast.LENGTH_SHORT).show();
+                    //... refresh fragment
+                }
+            }
         }
     }
 }
